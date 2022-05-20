@@ -1,7 +1,7 @@
 # GraphReproduction
 
 ## DATASET
-from:
+provided by:
 https://github.com/liyaguang/DCRNN
 ## STDGI
 
