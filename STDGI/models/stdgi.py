@@ -1,17 +1,35 @@
 import torch.nn as nn
 from layers import GCN, Discriminator
+import numpy as np
 
 class STDGI(nn.Module):
-  def __init__(self, n_in, n_h, activation):
+  def __init__(self, n_in, n_h):
     super(STDGI, self).__init__()
-    self.gcn = GCN(n_in, n_h, activation)
+    self.gcn = GCN(n_in, n_h, 'prelu')
     self.disc = Discriminator(n_h)
-    
-  def forward(self, x, xk1, xk3, xk6, adj, msk):
-    h = self.gcn(x, adj)
-    c_1 = self.gcn(xk1, adj)
-    c_2 = self.gcn(xk3, adj)
-    c_3 = self.gcn(xk6, adj)
 
-    ret = self.disc()
+  def forward(self, input, adj, msk):
+    ''''
+      x: features at time t
+      xk1: features at time t + 1
+      xk3: features at time t + 3
+      xk6: features at time t + 6
+    '''
+    #graph embedding
+
+    ret = 0
+    #input: 12 * 207 * 2
+    for i in range(11):
+      x = input[i]
+      xk1 = input[i+1]
+
+      idx = np.random.permutation(len(xk1))
+      ck1 = xk1[:, idx, :]   
+    
+      embed = self.gcn(x, adj)
+  
+      # time step k = 1, 3, 6
+      ret += self.disc(embed, x, xk1, ck1)
+
+    return ret, self.gcn
 
