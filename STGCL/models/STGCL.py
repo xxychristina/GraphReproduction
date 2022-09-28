@@ -5,7 +5,7 @@ import numpy as np
 import augmentation as ag
 
 class STGCL(nn.Module):
-  def __init__(self, encoder, decoder):
+  def __init__(self, device, encoder, decoder):
     super(STGCL, self).__init__()
     self.encoder = encoder
     self.decoder = decoder
