@@ -225,8 +225,9 @@ def negativeFilter(index, start_times, r_f):
       output.append(i)
   return output
 
-def c_loss(x1, x2, start_times, r_f=30):
+def c_loss(device, x1, x2, start_times, r_f=30):
   T = 0.1
+
   batch_size, _ = x1.size()
   x1_abs = x1.norm(dim=1)
   x2_abs = x2.norm(dim=1)
@@ -235,7 +236,7 @@ def c_loss(x1, x2, start_times, r_f=30):
   sim_matrix = torch.exp(sim_matrix / T)
   pos_sim = sim_matrix[range(batch_size), range(batch_size)]
 
-  nega_sim = torch.zeros(64, 64)
+  nega_sim = torch.zeros(64, 64).to(device)
   for i in range(batch_size):
     nega_samples = negativeFilter(i, start_times, r_f)
     for nega in nega_samples:
@@ -251,4 +252,3 @@ def c_loss(x1, x2, start_times, r_f=30):
     print(nega_sim)
     print(sim_matrix)
   return loss
-
