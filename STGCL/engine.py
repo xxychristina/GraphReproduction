@@ -5,7 +5,7 @@ import torch.optim as optim
 import util
 
 class trainer():
-  def __init__(self, scaler, device, adj, lr, encoder, decoder, r_f=30, c_rate=0.1):
+  def __init__(self, scaler, device, adj, lr, encoder, decoder, r_f=30, c_rate=0.01):
     self.model = STGCL(device, encoder, decoder).to(device)
     self.device = device
     self.adj = adj
