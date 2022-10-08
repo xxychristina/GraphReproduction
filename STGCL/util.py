@@ -140,7 +140,8 @@ def load_adj(pkl_filename, adjtype):
         adj = [np.diag(np.ones(adj_mx.shape[0])).astype(np.float32)]
     else:
         error = 0
-        assert error, "adj type not defined"
+        # assert error, "adj type not defined"
+        return sensor_ids, sensor_id_to_ind, adj_mx
     return sensor_ids, sensor_id_to_ind, adj
 
 

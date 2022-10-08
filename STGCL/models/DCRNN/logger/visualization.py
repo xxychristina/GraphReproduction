@@ -1,5 +1,5 @@
 import importlib
-from lib.utils import Timer
+from models.DCRNN.lib.utils import Timer
 
 
 class TensorboardWriter():

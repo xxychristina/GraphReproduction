@@ -4,11 +4,11 @@ from __future__ import print_function
 
 import numpy as np
 
-from lib import utils
 import torch
 import torch.nn as nn
-from base import BaseModel
 
+from models.DCRNN.lib import utils
+from models.DCRNN.base import BaseModel
 
 class DiffusionGraphConv(BaseModel):
     def __init__(self, supports, input_dim, hid_dim, num_nodes, max_diffusion_step, output_dim, bias_start=0.0):
@@ -106,7 +106,8 @@ class DCGRUCell(BaseModel):
         else:
             supports.append(utils.calculate_scaled_laplacian(adj_mat))
         for support in supports:
-            self._supports.append(self._build_sparse_matrix(support).cuda())  # to PyTorch sparse tensor
+            # self._supports.append(self._build_sparse_matrix(support).cuda())  # to PyTorch sparse tensor
+            self._supports.append(self._build_sparse_matrix(support))  # to PyTorch sparse tensor
         # supports = utils.calculate_scaled_laplacian(adj_mat, lambda_max=None)  # scipy coo matrix
         # self._supports = self._build_sparse_matrix(supports).cuda()  # to pytorch sparse tensor
 

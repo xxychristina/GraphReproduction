@@ -1,7 +1,7 @@
 import torch
 from abc import abstractmethod
 from numpy import inf
-from logger import TensorboardWriter
+from models.DCRNN.logger import TensorboardWriter
 
 
 class BaseTrainer:
