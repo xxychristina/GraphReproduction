@@ -28,6 +28,7 @@ class trainer():
     # print("closs" + str(closs))
     loss = (1 - self.c_rate) * ploss + self.c_rate * closs
     loss.backward()
+    torch.nn.utils.clip_grad_norm_(self.model.parameters(), 5)
     self.optimizer.step()
 
     return loss.item()
