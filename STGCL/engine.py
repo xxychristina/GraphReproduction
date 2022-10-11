@@ -5,14 +5,14 @@ import torch.optim as optim
 import util
 
 class trainer():
-  def __init__(self, scaler, device, adj, lr, encoder, decoder, r_f=30, c_rate=0.01):
+  def __init__(self, scaler, device, adj, lr, weight_decay, encoder, decoder, r_f=30, c_rate=0.01):
     self.model = STGCL(device, encoder, decoder).to(device)
     self.device = device
     self.adj = adj
     self.scaler = scaler
     self.r_f = r_f
     self.c_rate = c_rate
-    self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
+    self.optimizer = optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
   
   def train(self, input, y, start_times):
     self.model.train()
