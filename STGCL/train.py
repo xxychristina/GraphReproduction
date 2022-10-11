@@ -102,7 +102,8 @@ for i in range(1, 101):
         testx = torch.Tensor(x).to(device)
         testx = testx.transpose(1,3)
         with torch.no_grad():
-            preds, _, _ = engine.model(testx).transpose(1,3)
+            preds, _, _ = engine.model(testx)
+            preds = preds.transpose(1,3)
         outputs.append(preds.squeeze())
 
     yhat = torch.cat(outputs,dim=0)
