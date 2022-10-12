@@ -36,7 +36,7 @@ nhid = 32
 scaler = dataloader['scaler']
 lr = 0.001
 wdecay = 0.0001
-c_rate = 0.00
+c_rate = 0.001
 
 projection_head = nn.Sequential(nn.Linear(256, 256), nn.ReLU(inplace=True), nn.Linear(256, 256))
 encoder = gwnetEncoder(device, num_nodes, dropout, supports=supports, gcn_bool=gcn_bool, addaptadj=addaptadj, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid, dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
@@ -127,5 +127,5 @@ for i in range(12):
 
 log = 'On average over 12 horizons, Test MAE: {:.4f}, Test MAPE: {:.4f}, Test RMSE: {:.4f}'
 print(log.format(np.mean(amae),np.mean(amape),np.mean(armse)))
-torch.save(engine.model.state_dict(), "_exp"+str(1)+"_best_"+str(round(his_loss[bestid],2))+".pth")
+torch.save(engine.model.state_dict(), "_exp"+str(1)+"_best_"+str(round(his_loss[bestid],2))+ "_c_rate_" + str(c_rate) + ".pth")
 
