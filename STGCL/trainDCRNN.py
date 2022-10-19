@@ -122,8 +122,8 @@ predictions = []
 groundtruth = list()
 with torch.no_grad():
   for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
-    testx = torch.Tensor(x).to(device)
-    testy = torch.Tensor(y).to(device)
+    testx = torch.Tensor(x).cuda()
+    testy = torch.Tensor(y).cuda()
     outputs, _, _ = model(testx, testy, 0)
     y_preds = torch.cat([y_preds, outputs], dim=1)
 
