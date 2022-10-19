@@ -25,8 +25,8 @@ dataloader = util_dcrnn.load_dataset(data_path, batch_size, batch_size)
 '''
   Parameters setting
 '''
-# device = torch.device('cuda:0')
-device = torch.device('cpu')
+device = torch.device('cuda:0')
+# device = torch.device('cpu')
 batch_size = 64
 enc_input_dim = 2
 dec_input_dim = 1
@@ -91,8 +91,8 @@ for i in range(1, 101):
       global_step = (i - 1) * len_epoch + iter
       teacher_forcing_ratio = _compute_sampling_threshold(global_step, cl_decay_steps)
       
-      testx = torch.Tensor(x)
-      testy = torch.Tensor(y)
+      testx = torch.Tensor(x).to(device)
+      testy = torch.Tensor(y).to(device)
       loss = engine.eval(testx, testy, teacher_forcing_ratio)
       valid_loss.append(loss)
       # valid_loss.append(metrics[0])
@@ -110,7 +110,8 @@ for i in range(1, 101):
 #testing
 bestid = np.argmin(his_loss)
 engine.model.load_state_dict(torch.load("_epoch_"+str(bestid+1)+"_"+str(round(his_loss[bestid],2))+".pth"))
-engine.model.eval()
+model = engine.model.to(device)
+model.eval()
 
 realy = dataloader['y_test']
 realy = scaler.inverse_transform(realy)
@@ -122,7 +123,7 @@ with torch.no_grad():
   for iter, (x, y) in enumerate(dataloader['test_loader'].get_iterator()):
     testx = torch.Tensor(x).to(device)
     testy = torch.Tensor(y).to(device)
-    outputs, _, _ = engine.model(testx, testy, 0)
+    outputs, _, _ = model(testx, testy, 0)
     y_preds = torch.cat([y_preds, outputs], dim=1)
 
 y_preds = torch.transpose(y_preds, 0, 1)
