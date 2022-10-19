@@ -70,7 +70,7 @@ for i in range(1, 101):
         '''Timestamp for negative filter'''
         start_times = []
         for t in range(trainx.shape[0]):
-            curr = np.round(trainx[t, 1, 0, 0], 4)
+            curr = np.round(tempx[t, 1, 0, 0], 4)
             start_times.append(curr)
 
         start_times = torch.Tensor(start_times).to(device)
