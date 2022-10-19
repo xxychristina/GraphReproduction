@@ -28,7 +28,7 @@ class trainer():
     realy =  y[..., :1]
     self.optimizer.zero_grad()
 
-    ploss = self.ploss(output.cpu(), realy)
+    ploss = self.ploss(output, realy)
     closs = util_dcrnn.c_loss(self.device, sum_x, sum_c, start_times, self.r_f)
     loss = (1 - self.c_rate) * ploss + self.c_rate * closs
     loss.backward()
@@ -43,6 +43,6 @@ class trainer():
     predict = torch.transpose(output.view(12, 64, self.model.num_nodes,
                                                      self.model.output_dim), 0, 1)  # back to (50, 12, 207, 1)
     realy =  y[..., :1]
-    loss = self.ploss(predict.cpu(), realy)
+    loss = self.ploss(predict, realy)
     return loss.item()
 

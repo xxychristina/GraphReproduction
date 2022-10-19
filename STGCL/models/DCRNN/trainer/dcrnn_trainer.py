@@ -68,7 +68,7 @@ class DCRNNTrainer(BaseTrainer):
             output = torch.transpose(output.view(12, self.model.batch_size, self.model.num_nodes,
                                                  self.model.output_dim), 0, 1)  # back to (50, 12, 207, 1)
 
-            loss = self.loss(output.cpu(), label)  # loss is self-defined, need cpu input
+            loss = self.loss(output, label)  # loss is self-defined, need cpu input
             loss.backward()
             # add max grad clipping
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
