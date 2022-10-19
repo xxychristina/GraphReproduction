@@ -24,7 +24,7 @@ class trainer():
     output, sum_x, sum_c = self.model(input, y, teacher_forcing_ratio)
     
     output = torch.transpose(output.view(12, 64, self.model.num_nodes,
-                                                     self.model.output_dim), 0, 1)  # back to (50, 12, 207, 1)
+                                                     self.model.output_dim), 0, 1).cuda()  # back to (50, 12, 207, 1)
     realy =  y[..., :1]
     self.optimizer.zero_grad()
 
