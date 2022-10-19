@@ -63,6 +63,7 @@ def _compute_sampling_threshold(global_step, k):
 for i in range(1, 101):
     train_loss = []
     for iter, (x, y) in enumerate(dataloader['train_loader'].get_iterator()):
+        tempx = torch.Tensor(x)
         trainx = torch.Tensor(x).to(device)
         trainy = torch.Tensor(y).to(device)
 
