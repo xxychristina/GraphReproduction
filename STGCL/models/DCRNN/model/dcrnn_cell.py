@@ -6,9 +6,9 @@ import numpy as np
 
 import torch
 import torch.nn as nn
+from STGCL.models.DCRNN.lib import utils
 
-from models.DCRNN.lib import utils
-from models.DCRNN.base import BaseModel
+from STGCL.models.DCRNN.base import BaseModel
 
 class DiffusionGraphConv(BaseModel):
     def __init__(self, supports, input_dim, hid_dim, num_nodes, max_diffusion_step, output_dim, bias_start=0.0):
