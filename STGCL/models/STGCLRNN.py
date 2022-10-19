@@ -12,7 +12,7 @@ class STGCL(nn.Module):
     self.num_nodes = num_nodes
     self.output_dim = output_dim
     self.projection_head = nn.Sequential(nn.Linear(13248, 256), nn.ReLU(inplace=True), nn.Linear(256, 256))
-    self.GO_Symbol = torch.zeros(1, 64, self.num_nodes * self.output_dim, 1)
+    self.GO_Symbol = torch.zeros(1, 64, self.num_nodes * self.output_dim, 1).cuda()
 
   def forward(self, input, target, teacher_forcing_ratio):
     input = torch.transpose(input, dim0=0, dim1=1)
