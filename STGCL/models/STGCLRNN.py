@@ -17,7 +17,7 @@ class STGCL(nn.Module):
   def forward(self, input, target, teacher_forcing_ratio):
     input = torch.transpose(input, dim0=0, dim1=1)
     target = torch.transpose(target[..., :self.output_dim], dim0=0, dim1=1)
-    target = torch.cat([self.GO_Symbol, target], dim=0)
+    target = torch.cat([self.GO_Symbol, target], dim=0).cuda()
 
     '''encode the original'''
     init_hidden_state = self.encoder.init_hidden(64)
