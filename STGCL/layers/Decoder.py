@@ -3,8 +3,8 @@ import random
 import torch.nn as nn
 import torch.nn.functional as F
 
-# from models.DCRNN.model.dcrnn_cell import DCGRUCell
-# from models.DCRNN.base import BaseModel
+from models.DCRNN.model.dcrnn_cell import DCGRUCell
+from models.DCRNN.base import BaseModel
 
 class gwnet(nn.Module):
   def __init__(self,out_dim=12,skip_channels=256,end_channels=512):
@@ -94,7 +94,7 @@ class dcrnn(nn.Module):
 			teacher_force = random.random() < teacher_forcing_ratio  # a bool value
 			current_input = (inputs[t] if teacher_force else output)
 
-		return outputs
+		return outputs[1:, :, :]
 
 		def init_hidden(self, batch_size):
 			init_states = []  # this is a list of tuples

@@ -23,6 +23,7 @@ class trainer():
     real = torch.unsqueeze(realy,dim=1)
     predict = self.scaler.inverse_transform(output)
     ploss = util.masked_mae(predict, real, 0.0)
+    print(ploss)
     closs = util.c_loss(self.device, sum_x, sum_c, start_times, self.r_f)
     # print("ploss" + str(ploss))
     # print("closs" + str(closs))

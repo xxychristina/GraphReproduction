@@ -11,20 +11,17 @@ class STGCL(nn.Module):
     self.decoder = decoder
     self.num_nodes = num_nodes
     self.output_dim = output_dim
-    self.projection_head = nn.Sequential(nn.Linear(20800, 256), nn.ReLU(inplace=True), nn.Linear(256, 256))
+    self.projection_head = nn.Sequential(nn.Linear(13248, 256), nn.ReLU(inplace=True), nn.Linear(256, 256))
+    self.GO_Symbol = torch.zeros(1, 64, self.num_nodes * self.output_dim, 1)
 
   def forward(self, input, target, teacher_forcing_ratio):
-
-    # GO_Symbol = torch.zeros(1, 64, self.num_nodes * self.output_dim, 1).cuda()
-    GO_Symbol = torch.zeros(1, 64, self.num_nodes * self.output_dim, 1)
-
     input = torch.transpose(input, dim0=0, dim1=1)
     target = torch.transpose(target[..., :self.output_dim], dim0=0, dim1=1)
-    target = torch.cat([GO_Symbol, target], dim=0)
+    target = torch.cat([self.GO_Symbol, target], dim=0)
 
     '''encode the original'''
     init_hidden_state = self.encoder.init_hidden(64)
-    encoded,_ = self.encoder(input, init_hidden_state)
+    encoded, _ = self.encoder(input, init_hidden_state)
     
     '''Predictive Learning:
         Generate the predict result with decoder

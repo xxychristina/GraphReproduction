@@ -7,7 +7,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 import util
-import augmentation
 
 # file path
 data_path = "data/PEMS-BAY"
@@ -23,8 +22,8 @@ from layers.Encoder import gwnet as gwnetEncoder
 from layers.Decoder import gwnet as gwnetDecoder
 
 
-device = torch.device('cuda:0')
-# device = torch.device('cpu')
+# device = torch.device('cuda:0')
+device = torch.device('cpu')
 num_nodes = 325
 dropout = 0.3
 supports = [torch.Tensor(i).to(device) for i in adj_mx]

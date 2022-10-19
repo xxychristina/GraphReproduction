@@ -2,6 +2,7 @@
 @sourcecode https://github.com/nnzhan/Graph-WaveNet
 '''
 import pickle
+from random import shuffle
 import numpy as np
 import os
 import scipy.sparse as sp
@@ -10,7 +11,7 @@ from scipy.sparse import linalg
 
 
 class DataLoader(object):
-    def __init__(self, xs, ys, batch_size, pad_with_last_sample=True):
+    def __init__(self, xs, ys, batch_size, pad_with_last_sample=True, shuffle = False):
         """
         :param xs:
         :param ys:
@@ -27,6 +28,9 @@ class DataLoader(object):
             ys = np.concatenate([ys, y_padding], axis=0)
         self.size = len(xs)
         self.num_batch = int(self.size // self.batch_size)
+        if shuffle:
+            permutation = np.random.permutation(self.size)
+            xs, ys = xs[permutation], ys[permutation]
         self.xs = xs
         self.ys = ys
 
@@ -155,7 +159,8 @@ def load_dataset(dataset_dir, batch_size, valid_batch_size= None, test_batch_siz
     # Data format
     for category in ['train', 'val', 'test']:
         data['x_' + category][..., 0] = scaler.transform(data['x_' + category][..., 0])
-    data['train_loader'] = DataLoader(data['x_train'], data['y_train'], batch_size)
+        data['y_' + category][..., 0] = scaler.transform(data['y_' + category][..., 0])
+    data['train_loader'] = DataLoader(data['x_train'], data['y_train'], batch_size, shuffle = True)
     data['val_loader'] = DataLoader(data['x_val'], data['y_val'], valid_batch_size)
     data['test_loader'] = DataLoader(data['x_test'], data['y_test'], test_batch_size)
     data['scaler'] = scaler
@@ -191,6 +196,26 @@ def masked_mae(preds, labels, null_val=np.nan):
     loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
     return torch.mean(loss)
 
+def masked_mae_torch(preds, labels, null_val=np.nan):
+    """
+    Accuracy with masking. FOR DCRNN
+    :param preds:
+    :param labels:
+    :param null_val:
+    :return:
+    """
+
+    if np.isnan(null_val):
+        mask = ~torch.isnan(labels)
+    else:
+        mask = torch.ne(labels, null_val)
+    mask = mask.to(torch.float32)
+    mask /= torch.mean(mask)
+    mask = torch.where(torch.isnan(mask), torch.zeros_like(mask), mask)
+    loss = torch.abs(preds - labels)
+    loss = loss * mask
+    loss = torch.where(torch.isnan(loss), torch.zeros_like(loss), loss)
+    return torch.mean(loss)
 
 def masked_mape(preds, labels, null_val=np.nan):
     if np.isnan(null_val):
