@@ -6,7 +6,7 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-from lib import utils
+from STGCL.models.DCRNN.lib import utils
 
 from STGCL.models.DCRNN.base import BaseModel
 
