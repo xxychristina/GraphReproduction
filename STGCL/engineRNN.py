@@ -17,32 +17,34 @@ class trainer():
     self.c_rate = c_rate
     self.max_grad_norm = max_grad_norm
     self.ploss = metric_dcrnn.masked_mae_loss(scaler, 0.0)
-    self.optimizer = optim.Adam(self.model.parameters(), lr=lr, eps=1.0e-3)
+    self.optimizer = optim.Adam(self.model.parameters(), lr=lr, eps=1.0e-3, amsgrad=True)
   
   def train(self, input, y, teacher_forcing_ratio, start_times):
     self.model.train()
-    output, sum_x, sum_c = self.model(input, y, teacher_forcing_ratio)
-    
-    output = torch.transpose(output.view(12, 64, self.model.num_nodes,
-                                                     self.model.output_dim), 0, 1).cuda()  # back to (50, 12, 207, 1)
     realy =  y[..., :1]
     self.optimizer.zero_grad()
+
+    output, sum_x, sum_c = self.model(input, y, teacher_forcing_ratio)
+    output = torch.transpose(output.view(12, 64, self.model.num_nodes,
+                                                     self.model.output_dim), 0, 1).cuda()  # back to (50, 12, 207, 1)
 
     ploss = self.ploss(output, realy)
     closs = util_dcrnn.c_loss(self.device, sum_x, sum_c, start_times, self.r_f)
     loss = (1 - self.c_rate) * ploss + self.c_rate * closs
     loss.backward()
 
+    #add max grad clipping
     torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
     self.optimizer.step()
     return loss.item()
   
   def eval(self, input, y, teacher_forcing_ratio):
     self.model.eval()
+    realy =  y[..., :1]
+    
     output, sum_x, sum_c = self.model(input, y, teacher_forcing_ratio)
     predict = torch.transpose(output.view(12, 64, self.model.num_nodes,
                                                      self.model.output_dim), 0, 1).cuda()  # back to (50, 12, 207, 1)
-    realy =  y[..., :1]
     loss = self.ploss(predict, realy)
     return loss.item()
 
