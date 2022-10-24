@@ -17,7 +17,7 @@ class trainer():
     self.c_rate = c_rate
     self.max_grad_norm = max_grad_norm
     self.ploss = metric_dcrnn.masked_mae_loss(scaler, 0.0)
-    self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
+    self.optimizer = optim.Adam(self.model.parameters(), lr=lr, eps=1.0e-3)
   
   def train(self, input, y, teacher_forcing_ratio, start_times):
     self.model.train()
