@@ -60,7 +60,7 @@ def _compute_sampling_threshold(global_step, k):
     """
     return k / (k + math.exp(global_step / k))
 
-for i in range(1, 101):
+for i in range(1, 2):
     train_loss = []
     for iter, (x, y) in enumerate(dataloader['train_loader'].get_iterator()):
         tempx = torch.Tensor(x)
@@ -84,29 +84,29 @@ for i in range(1, 101):
             log = 'Iter: {:03d}, Train Loss: {:.4f}'
             print(log.format(iter, train_loss[-1]), flush=True)
     
-    valid_loss = []
-    valid_mape = []
-    valid_rmse = []
-    for iter, (x, y) in enumerate(dataloader['val_loader'].get_iterator()):
+        valid_loss = []
+        valid_mape = []
+        valid_rmse = []
+        for iter, (x, y) in enumerate(dataloader['val_loader'].get_iterator()):
 
-      global_step = (i - 1) * len_epoch + iter
-      teacher_forcing_ratio = _compute_sampling_threshold(global_step, cl_decay_steps)
-      
-      testx = torch.Tensor(x).to(device)
-      testy = torch.Tensor(y).to(device)
-      loss = engine.eval(testx, testy, teacher_forcing_ratio)
-      valid_loss.append(loss)
-      # valid_loss.append(metrics[0])
-      # valid_mape.append(metrics[1])
-      # valid_rmse.append(metrics[2])
-    
-    mvalid_loss = np.mean(valid_loss)
-    # mvalid_mape = np.mean(valid_mape)
-    # mvalid_rmse = np.mean(valid_rmse)
-    his_loss.append(mvalid_loss)
+          global_step = (i - 1) * len_epoch + iter
+          teacher_forcing_ratio = _compute_sampling_threshold(global_step, cl_decay_steps)
+          
+          testx = torch.Tensor(x).to(device)
+          testy = torch.Tensor(y).to(device)
+          loss = engine.eval(testx, testy, teacher_forcing_ratio)
+          valid_loss.append(loss)
+          # valid_loss.append(metrics[0])
+          # valid_mape.append(metrics[1])
+          # valid_rmse.append(metrics[2])
         
-    print(f'Epoch: {i}, TrainLoss: {np.mean(train_loss)}, ValidLoss: {mvalid_loss}')
-    torch.save(engine.model.state_dict(), "_epoch_"+str(i)+"_"+str(round(mvalid_loss,2))+".pth")
+        mvalid_loss = np.mean(valid_loss)
+        # mvalid_mape = np.mean(valid_mape)
+        # mvalid_rmse = np.mean(valid_rmse)
+        his_loss.append(mvalid_loss)
+            
+        print(f'Epoch: {i}, TrainLoss: {np.mean(train_loss)}, ValidLoss: {mvalid_loss}')
+        torch.save(engine.model.state_dict(), "_epoch_"+str(i)+"_"+str(round(mvalid_loss,2))+".pth")
 
 #testing
 bestid = np.argmin(his_loss)

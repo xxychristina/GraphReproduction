@@ -35,7 +35,7 @@ nhid = 32
 scaler = dataloader['scaler']
 lr = 0.001
 wdecay = 0.0001
-c_rate = 0.2
+c_rate = 0.05
 
 projection_head = nn.Sequential(nn.Linear(256, 256), nn.ReLU(inplace=True), nn.Linear(256, 256))
 encoder = gwnetEncoder(device, num_nodes, dropout, supports=supports, gcn_bool=gcn_bool, addaptadj=addaptadj, in_dim=in_dim, out_dim=seq_length, residual_channels=nhid, dilation_channels=nhid, skip_channels=nhid * 8, end_channels=nhid * 16)
