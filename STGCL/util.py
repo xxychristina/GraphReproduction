@@ -272,9 +272,4 @@ def c_loss(device, x1, x2, start_times, r_f=30):
   
   loss = pos_sim / (sim_matrix.sum(dim=1) - nega_sim.sum(dim=1))
   loss = - torch.log(loss).mean()
-  if np.isnan(loss.item()):
-    print(pos_sim)
-    print(sim_matrix.sum(dim=1) - nega_sim.sum(dim=1))
-    print(nega_sim)
-    print(sim_matrix)
   return loss
